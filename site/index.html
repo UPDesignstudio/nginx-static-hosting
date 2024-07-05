@@ -1,37 +1,370 @@
 <!DOCTYPE html>
-
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>NGINX on Railway</title>
-    <meta name="description" content="Choo Choo!" />
 
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Add a Geocoder</title>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js"></script>
+  <script src="aux-coordinates.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+    }
 
-    <link rel="stylesheet" href="/styles.css?v=1.0" />
-  </head>
+    #map {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+    }
 
-  <body>
-    <main>
-      <img
-        src="https://railway.app/brand/logo-light.svg"
-        alt="Railway logo"
-        class="logo"
-      />
+    .custom-popup {
+      background-color: #fff;
+      border-radius: 3px;
+      padding: 10px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
 
-      <h1>NGINX on Railway</h1>
+    .mapboxgl-popup-tip {
+      display: none;
+    }
 
-      <p>
-        Choo Choo! This is an example of an NGINX static site running on
-        Railway.
-        <a
-          href="https://github.com/railwayapp/starters/tree/master/examples/nginx"
-          >View source</a
-        >.
-      </p>
-    </main>
+    .mapboxgl-popup.all::after {
+      content: "";
+      height: 10px;
+      width: 10px;
+      background-color: rgb(69, 69, 255);
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      /* border-radius: 20px 20px 0 20px; */
+      transform: translate(-50%, 50%) rotate(45deg);
+      z-index: -1;
+      border: 1px solid white;
+      visibility: visible;
+      border-radius: 10px;
+    }
 
-    <script src="/script.js"></script>
-  </body>
+    .mapboxgl-popup.AUX::after {
+      background-color: rgb(205, 69, 255) !important;
+    }
+
+    .mapboxgl-popup.LUT::after {
+      background-color: rgb(0, 163, 218) !important;
+    }
+
+    .mapboxgl-popup.ORT::after {
+      background-color: rgb(248, 166, 15) !important;
+    }
+
+    .mapboxgl-popup.GEH::after {
+      background-color: rgb(37, 12, 46) !important;
+    }
+
+    .mapboxgl-popup.LUW::after {
+      background-color: rgb(0, 9, 175) !important;
+    }
+
+    .mapboxgl-popup.RA::after {
+      background-color: rgb(0, 148, 27) !important;
+    }
+
+    .mapboxgl-popup.SMINA::after {
+      background-color: rgb(255, 69, 69) !important;
+    }
+
+    .mapboxgl-popup.SOC::after {
+      background-color: rgb(57, 0, 180) !important;
+    }
+
+    .mapboxgl-popup.SUJ::after {
+      background-color: rgb(139, 139, 139) !important;
+    }
+
+    .mapboxgl-popup.TMC::after {
+      background-color: rgb(94, 223, 255) !important;
+    }
+
+    .mapboxgl-popup.UPD::after {
+      background-color: rgb(236, 255, 69) !important;
+    }
+
+    .mapboxgl-popup.WBW::after {
+      background-color: rgb(255, 156, 69) !important;
+    }
+
+    .mapboxgl-popup.WBY::after {
+      background-color: rgb(255, 69, 159) !important;
+    }
+
+    .side-view {
+      position: absolute;
+      width: 300px;
+      background-color: white;
+      box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.262);
+      overflow-y: visible;
+    }
+
+    .side-view div {
+      border: 1px solid gray;
+      cursor: pointer;
+      padding: 10px;
+      font-size: 15px;
+    }
+
+
+
+    .mapboxgl-popup-content {
+      padding: 0;
+      margin: 0;
+    }
+
+    #map {
+      position: absolute;
+      width: calc(100vw - 300px);
+      right: 0;
+    }
+
+    .close-button {
+      float: right;
+    }
+
+    .side-view {
+      height: 100vh;
+      /* Set the height of the container to 100% of the viewport height */
+      overflow-y: auto;
+      /* Enable vertical scrolling */
+      overflow-x: hidden;
+      /* Hide horizontal scrolling (optional, if needed) */
+      box-sizing: border-box;
+      /* Ensure padding and border are included in the element's total width and height */
+    }
+
+    /* Webkit-based browsers (Chrome, Safari) */
+    .side-view::-webkit-scrollbar {
+      width: 8px;
+      /* Set the width of the scrollbar */
+    }
+
+    .side-view::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      /* Track color */
+      border-radius: 10px;
+      /* Rounded corners for the track */
+    }
+
+    .side-view::-webkit-scrollbar-thumb {
+      background: #888;
+      /* Scrollbar thumb color */
+      border-radius: 10px;
+      /* Rounded corners for the thumb */
+    }
+
+    .side-view::-webkit-scrollbar-thumb:hover {
+      background: #555;
+      /* Color when hovering over the scrollbar thumb */
+    }
+
+    /* Firefox */
+    .side-view {
+      scrollbar-width: thin;
+      /* Set the width of the scrollbar */
+      scrollbar-color: #888 #f1f1f1;
+      /* Set the thumb and track colors */
+    }
+
+    /* Optional: for older versions of Firefox (before 64) */
+    .side-view::-moz-scrollbar {
+      width: 8px;
+    }
+
+    .side-view::-moz-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+
+    .side-view::-moz-scrollbar-thumb {
+      background: #888;
+      border-radius: 10px;
+    }
+
+    .side-view::-moz-scrollbar-thumb:hover {
+      background: #555;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="map"></div>
+  <div class="side-view">
+    <div class="fold-down" onclick="selectCategory('AUX')" id="AUX">AUX</div>
+    <div class="fold-down" onclick="selectCategory('LUT')" id="LUT">LUT</div>
+    <div class="fold-down" onclick="selectCategory('ORT')" id="ORT">ORT</div>
+    <div class="fold-down" onclick="selectCategory('GEH')" id="GEH">GEH</div>
+    <div class="fold-down" onclick="selectCategory('LUW')" id="LUW">LUW</div>
+    <div class="fold-down" onclick="selectCategory('RA')" id="RA">RA</div>
+    <div class="fold-down" onclick="selectCategory('SMINA')" id="SMINA">SMINA</div>
+    <div class="fold-down" onclick="selectCategory('SOC')" id="SOC">SOC</div>
+    <div class="fold-down" onclick="selectCategory('SUJ')" id="SUJ">SUJ</div>
+    <div class="fold-down" onclick="selectCategory('TMC')" id="TMC">TMC</div>
+    <div class="fold-down" onclick="selectCategory('UPD')" id="UPD">UPD</div>
+    <div class="fold-down" onclick="selectCategory('WBW')" id="WBW">WBW</div>
+    <div class="fold-down" onclick="selectCategory('WBY')" id="WBY">WBY</div>
+  </div>
+
+  <script src="stores.js"></script>
+  <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
+  <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
+  <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css">
+
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZmFiaWFuZmFiaWFuIiwiYSI6ImNscHZhYm9wcTAzbWkybXBmZ3NoYzVkajcifQ.wVZsBT_ne-Kim0JmryvbOA';
+    const map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/streets-v12',
+      center: [9.13610553741455, 50.94752883911133],
+      zoom: 5.5
+    });
+
+    let selectedCategory = 'all';
+    let hotspots = [];
+    let hotspotPointers = [];
+
+    const stores = {
+      type: "FeatureCollection",
+      features: auxStores
+    };
+
+    map.on('load', function () {
+      map.addSource('stores', { type: 'geojson', data: stores });
+      map.addLayer({
+        id: 'stores',
+        type: 'circle',
+        source: 'stores',
+        paint: {
+          'circle-radius': 10,
+          'circle-color': '#007cbf'
+        }
+      });
+      stores.features.forEach(store => {
+        const popup = new mapboxgl.Popup({
+          closeButton: false,
+          closeOnClick: false,
+          className: `${store.properties.name.split(" ")[0]} all`
+        })
+          .setLngLat(store.geometry.coordinates)
+          .setHTML(`
+                    <div class="custom-popup ${store.properties.name}">
+                        <div class="no-padding">${store.properties.name}</div>
+                        <div class="no-padding">${store.properties.address}</div>
+                    </div>
+                `)
+          .addTo(map);
+        store.properties.popup = popup;
+      });
+      map.setLayoutProperty(map.getStyle().layers[134].id, 'visibility', 'none');
+    });
+
+    const geocoder = new MapboxGeocoder({
+      accessToken: mapboxgl.accessToken,
+      mapboxgl: mapboxgl,
+      marker: true
+    });
+    
+    map.addControl(geocoder);
+
+    geocoder.on('result', function (event) {
+      const searchResult = event.result.geometry;
+      const options = { units: 'kilometers' };
+
+      stores.features.forEach(store => {
+        store.properties.distance = turf.distance(searchResult, store.geometry, options);
+      });
+
+      stores.features.sort((a, b) => a.properties.distance - b.properties.distance);
+
+      const closestStore = stores.features[1];
+      const bounds = new mapboxgl.LngLatBounds();
+      bounds.extend(searchResult.coordinates);
+      bounds.extend(closestStore.geometry.coordinates);
+
+      map.fitBounds(bounds, { padding: 20 });
+    });
+
+    function selectCategory(category, override) {
+
+      if (override) setTimeout(() => { 
+        selectCategory('all') 
+        return
+      }, 1)
+
+      selectedCategory = category;
+      updatePopups();
+      fitToSelectedCategory();
+      updateSideView();
+    }
+
+    function updatePopups() {
+      document.querySelectorAll('.mapboxgl-popup').forEach(popup => {
+        popup.style.display = popup.classList.contains(selectedCategory) ? 'block' : 'none';
+      });
+      togglePopups();
+    }
+
+    function fitToSelectedCategory() {
+      const selectedStores = selectedCategory === 'all' ? stores.features : stores.features.filter(store => store.properties.name.includes(selectedCategory));
+      console.log("filtered stores ", selectedStores, selectedStores.length)
+      const bounds = new mapboxgl.LngLatBounds();
+
+      selectedStores.forEach(store => bounds.extend(store.geometry.coordinates));
+      map.fitBounds(bounds, { padding: 20 });
+    }
+
+    function updateSideView() {
+      const selectedStores = selectedCategory === 'all' ? stores.features : stores.features.filter(store => store.properties.name.includes(selectedCategory));
+      document.querySelectorAll('.side-view div').forEach(div => {
+        const category = div.id;
+        if (category === selectedCategory) {
+          if (selectedCategory != "all") div.innerHTML = `<strong>${category}<div class="close-button" onclick="selectCategory('all', 'override')">X</div></strong><br>${selectedStores.map(store => store.properties.name).join('<br>')}`;
+        } else {
+          div.innerHTML = category;
+        }
+      });
+    }
+
+    function togglePopups() {
+      if (hotspotPointers.length === 0 && hotspots.length === 0) {
+        hotspots = Array.from(document.getElementsByClassName('mapboxgl-popup'));
+        hotspotPointers = Array.from(document.getElementsByClassName('mapboxgl-popup-tip'));
+        if (hotspotPointers.length === 0 && hotspots.length === 0) {
+          setTimeout(togglePopups, 100);
+          return;
+        }
+      }
+
+      const zoomLevel = map.getZoom();
+      const highZoomThreshold = 6;
+
+      hotspots.forEach(popup => {
+        popup.style.visibility = (zoomLevel < highZoomThreshold || !popup.classList.contains(selectedCategory)) ? 'hidden' : 'visible';
+        popup.style.width = (zoomLevel < highZoomThreshold || !popup.classList.contains(selectedCategory)) ? '0' : '';
+        popup.style.height = (zoomLevel < highZoomThreshold || !popup.classList.contains(selectedCategory)) ? '0' : '';
+      });
+      hotspotPointers.forEach(popup => {
+        popup.style.visibility = (zoomLevel < highZoomThreshold) ? 'hidden' : 'visible';
+        popup.style.width = (zoomLevel < highZoomThreshold) ? '0' : '';
+        popup.style.height = (zoomLevel < highZoomThreshold) ? '0' : '';
+      });
+    }
+
+    map.on('zoom', togglePopups);
+
+    togglePopups();
+  </script>
+</body>
+
 </html>
