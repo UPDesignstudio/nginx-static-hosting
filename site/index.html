@@ -9,6 +9,47 @@
   <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js"></script>
   <script src="aux-coordinates.js"></script>
   <style>
+    :root {
+      --color-primary: #131f75;
+      --color-primary-dark: #141748;
+      --color-primary-dark-map: #0b0d31;
+      --color-primary-rgba-50: rgba(19, 31, 117, .5);
+      --color-secondary: #2bded7;
+
+      --ars: #2bded7;
+      --aux: #2bded7;
+      --geh: #882087;
+      --lut: #0050a0;
+      --luw: #00a4a4;
+      --mts: #b71435;
+      --ort: #003e90;
+      --ra: #81c970;
+      --sc: #00d084;
+      --smina: #F18753;
+      --soc: #89ba17;
+      --suj: #91970f;
+      --tmc: #009b69;
+      --upd: #FFD701;
+      --wbw: #e20613;
+      --wby: #2bded7;
+    }
+
+    .mapboxgl-popup.ARS::after    {background-color: var(--ars) !important;}
+    .mapboxgl-popup.AUX::after    {background-color: var(--aux) !important;}
+    .mapboxgl-popup.GEH::after    {background-color: var(--geh) !important;}
+    .mapboxgl-popup.LUT::after    {background-color: var(--lut) !important;}
+    .mapboxgl-popup.LUW::after    {background-color: var(--luw) !important;}
+    .mapboxgl-popup.MTS::after    {background-color: var(--mts) !important;}
+    .mapboxgl-popup.ORT::after    {background-color: var(--ort) !important;}
+    .mapboxgl-popup.RA::after     {background-color: var(--ra) !important;}
+    .mapboxgl-popup.SC::after     {background-color: var(--sc) !important;}
+    .mapboxgl-popup.SMINA::after  {background-color: var(--smina) !important;}
+    .mapboxgl-popup.SOC::after    {background-color: var(--soc) !important;}
+    .mapboxgl-popup.SUJ::after    {background-color: var(--suj) !important;}
+    .mapboxgl-popup.TMC::after    {background-color: var(--tmc) !important;}
+    .mapboxgl-popup.UPD::after    {background-color: var(--upd) !important;}
+    .mapboxgl-popup.WBW::after    {background-color: var(--wbw) !important;}
+    .mapboxgl-popup.WBY::after    {background-color: var(--wby) !important;}
     body {
       margin: 0;
       padding: 0;
@@ -20,6 +61,7 @@
       top: 0;
       bottom: 0;
       width: 100%;
+      /* filter: brightness(1.6) contrast(1) hue-rotate(-40deg); */
     }
 
     .custom-popup {
@@ -27,16 +69,32 @@
       border-radius: 3px;
       padding: 10px;
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      z-index: 1000000000;
+    }
+
+    .custom-popup:before {
+      position: absolute;
+      content: "";
+      transform: translateX(-50%) rotate(45deg) !important;
+      height: 20px;
+      width: 20px;
+      background-color: white;
+      bottom: -10px;
+      left: 50%;
     }
 
     .mapboxgl-popup-tip {
       display: none;
     }
 
+    .mapboxgl-popup {
+      margin-bottom: 20px;
+    }
+
     .mapboxgl-popup.all::after {
       content: "";
-      height: 10px;
-      width: 10px;
+      height: 15px;
+      width: 15px;
       background-color: rgb(69, 69, 255);
       position: absolute;
       left: 50%;
@@ -44,79 +102,69 @@
       /* border-radius: 20px 20px 0 20px; */
       transform: translate(-50%, 50%) rotate(45deg);
       z-index: -1;
-      border: 1px solid white;
+      /* border: 3px solid white; */
       visibility: visible;
-      border-radius: 10px;
+      border-radius: 15px;
     }
 
-    .mapboxgl-popup.AUX::after {
-      background-color: rgb(205, 69, 255) !important;
-    }
 
-    .mapboxgl-popup.LUT::after {
-      background-color: rgb(0, 163, 218) !important;
-    }
-
-    .mapboxgl-popup.ORT::after {
-      background-color: rgb(248, 166, 15) !important;
-    }
-
-    .mapboxgl-popup.GEH::after {
-      background-color: rgb(37, 12, 46) !important;
-    }
-
-    .mapboxgl-popup.LUW::after {
-      background-color: rgb(0, 9, 175) !important;
-    }
-
-    .mapboxgl-popup.RA::after {
-      background-color: rgb(0, 148, 27) !important;
-    }
-
-    .mapboxgl-popup.SMINA::after {
-      background-color: rgb(255, 69, 69) !important;
-    }
-
-    .mapboxgl-popup.SOC::after {
-      background-color: rgb(57, 0, 180) !important;
-    }
-
-    .mapboxgl-popup.SUJ::after {
-      background-color: rgb(139, 139, 139) !important;
-    }
-
-    .mapboxgl-popup.TMC::after {
-      background-color: rgb(94, 223, 255) !important;
-    }
-
-    .mapboxgl-popup.UPD::after {
-      background-color: rgb(236, 255, 69) !important;
-    }
-
-    .mapboxgl-popup.WBW::after {
-      background-color: rgb(255, 156, 69) !important;
-    }
-
-    .mapboxgl-popup.WBY::after {
-      background-color: rgb(255, 69, 159) !important;
-    }
 
     .side-view {
       position: absolute;
       width: 300px;
       background-color: white;
-      box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.262);
+      box-shadow: 10px 0 10px 10px rgba(0, 0, 0, 0.262);
       overflow-y: visible;
     }
 
-    .side-view div {
-      border: 1px solid gray;
+    .side-view>div>div {
+      border-bottom: 1px solid rgb(206, 206, 206);
       cursor: pointer;
-      padding: 10px;
+      padding: 15px;
+      padding-left: 25px;
       font-size: 15px;
     }
 
 
+    .sub-selection-field {
+      padding-left: 50px !important;
+      background-color: #f6f6f6;
+      border-bottom: #c8c8c8;
+      margin: 0 0 0 15px;
+    }
+
+    .sub-selection-field:before {
+      content: "○";
+      font-size: 30px;
+      padding: 0;
+      margin: 0;
+      position: absolute;
+      transform: translateX(-30px) translateY(-12px);
+    }
+
+    .selected:before {
+      content: "●";
+      font-size: 30px;
+      padding: 0;
+      margin: 0;
+      position: absolute;
+      transform: translateX(-30px) translateY(-12px);
+    }
+
+
+
+    .side-view div div:not(.selected):hover {
+      background: #f1f1f1;
+    }
+
+    .side-view div:has(.sub-selection-field) .category-header {
+      font-weight: bold;
+    }
+
+    .selected {
+      background-color: var(--color-primary);
+      color: white;
+    }
 
     .mapboxgl-popup-content {
       padding: 0;
@@ -129,8 +177,22 @@
       right: 0;
     }
 
+    .category-header {
+      position: relative;
+    }
+
+
     .close-button {
-      float: right;
+      position: absolute;
+      top: 0;
+      right: 0;
+      font-size: 20px;
+      padding: 10px;
+    }
+
+    .back-button:hover {
+      background: #f1f1f1;
+
     }
 
     .side-view {
@@ -195,39 +257,64 @@
     .side-view::-moz-scrollbar-thumb:hover {
       background: #555;
     }
+
+    .back-button {
+      position: absolute;
+      top: 10px;
+      left: calc(300px + 10px);
+      padding: 10px 20px;
+      border-radius: 5px;
+      background-color: white;
+      cursor: pointer;
+      display: none;
+    }
+
+    @media only screen and (max-width: 600px) {
+      .side-view {
+        width: 100vw;
+        top: 50vh;
+        height: 50vh;
+      }
+
+      #map {
+        left: 0;
+        width: 100vw;
+        height: 50vh;
+      }
+
+      .back-button {
+        left: 10px
+      }
+    }
   </style>
 </head>
 
 <body>
   <div id="map"></div>
-  <div class="side-view">
-    <div class="fold-down" onclick="selectCategory('AUX')" id="AUX">AUX</div>
-    <div class="fold-down" onclick="selectCategory('LUT')" id="LUT">LUT</div>
-    <div class="fold-down" onclick="selectCategory('ORT')" id="ORT">ORT</div>
-    <div class="fold-down" onclick="selectCategory('GEH')" id="GEH">GEH</div>
-    <div class="fold-down" onclick="selectCategory('LUW')" id="LUW">LUW</div>
-    <div class="fold-down" onclick="selectCategory('RA')" id="RA">RA</div>
-    <div class="fold-down" onclick="selectCategory('SMINA')" id="SMINA">SMINA</div>
-    <div class="fold-down" onclick="selectCategory('SOC')" id="SOC">SOC</div>
-    <div class="fold-down" onclick="selectCategory('SUJ')" id="SUJ">SUJ</div>
-    <div class="fold-down" onclick="selectCategory('TMC')" id="TMC">TMC</div>
-    <div class="fold-down" onclick="selectCategory('UPD')" id="UPD">UPD</div>
-    <div class="fold-down" onclick="selectCategory('WBW')" id="WBW">WBW</div>
-    <div class="fold-down" onclick="selectCategory('WBY')" id="WBY">WBY</div>
+  <div class="side-view" id="sideView">
+
   </div>
 
   <script src="stores.js"></script>
-  <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
+  <script
+    src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
   <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
-  <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css">
-
+  <link rel="stylesheet"
+    href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css">
+  <div class="back-button" onclick="selectCategory('all')">
+    Zurück
+  </div>
   <script>
+
+
+
     mapboxgl.accessToken = 'pk.eyJ1IjoiZmFiaWFuZmFiaWFuIiwiYSI6ImNscHZhYm9wcTAzbWkybXBmZ3NoYzVkajcifQ.wVZsBT_ne-Kim0JmryvbOA';
     const map = new mapboxgl.Map({
       container: 'map',
-      style: 'mapbox://styles/mapbox/streets-v12',
+      style: 'style.json', // Path to your local style JSON file
       center: [9.13610553741455, 50.94752883911133],
-      zoom: 5.5
+      zoom: 5.5,
+      maxZoom: 15
     });
 
     let selectedCategory = 'all';
@@ -239,6 +326,41 @@
       features: auxStores
     };
 
+    let uniqueCategories = []
+
+    auxStores.forEach(store => {
+      console.log(store)
+      if (!uniqueCategories.includes(store.properties.name.split(" ")[0])) uniqueCategories.push(store.properties.name.split(" ")[0])
+    })
+
+    function createDivsFromStrings(strings) {
+      const container = document.createDocumentFragment();
+
+      strings.forEach(str => {
+        const outerDiv = document.createElement('div');
+        outerDiv.className = 'fold-down';
+        outerDiv.id = str;
+
+        const innerDiv = document.createElement('div');
+        innerDiv.onclick = () => selectCategory(str);
+        innerDiv.textContent = str;
+
+        outerDiv.appendChild(innerDiv);
+        container.appendChild(outerDiv);
+      });
+
+      return container;
+    }
+
+    function sortStringsAlphabetically(strings) {
+      return strings.sort((a, b) => a.localeCompare(b));
+    }
+
+    uniqueCategories = sortStringsAlphabetically(uniqueCategories)
+
+    document.getElementById("sideView").appendChild(createDivsFromStrings(uniqueCategories))
+    // console.log(uniqueCategories)
+
     map.on('load', function () {
       map.addSource('stores', { type: 'geojson', data: stores });
       map.addLayer({
@@ -246,7 +368,7 @@
         type: 'circle',
         source: 'stores',
         paint: {
-          'circle-radius': 10,
+          'circle-radius': 20,
           'circle-color': '#007cbf'
         }
       });
@@ -258,7 +380,7 @@
         })
           .setLngLat(store.geometry.coordinates)
           .setHTML(`
-                    <div class="custom-popup ${store.properties.name}">
+                    <div class="custom-popup ${store.properties.name}  ${store.properties.name.replaceAll(" ", "_")}">
                         <div class="no-padding">${store.properties.name}</div>
                         <div class="no-padding">${store.properties.address}</div>
                     </div>
@@ -266,15 +388,15 @@
           .addTo(map);
         store.properties.popup = popup;
       });
-      map.setLayoutProperty(map.getStyle().layers[134].id, 'visibility', 'none');
+      map.setLayoutProperty(map.getStyle().layers[78].id, 'visibility', 'none');
     });
 
     const geocoder = new MapboxGeocoder({
       accessToken: mapboxgl.accessToken,
       mapboxgl: mapboxgl,
-      marker: true
+      marker: false
     });
-    
+
     map.addControl(geocoder);
 
     geocoder.on('result', function (event) {
@@ -297,10 +419,13 @@
 
     function selectCategory(category, override) {
 
-      if (override) setTimeout(() => { 
-        selectCategory('all') 
-        return
-      }, 1)
+      if (category == "all") document.getElementsByClassName("back-button")[0].style.display = "none"
+      else document.getElementsByClassName("back-button")[0].style.display = "block"
+
+      if (override) {
+        setTimeout(() => selectCategory('all'), 1);
+        return;
+      }
 
       selectedCategory = category;
       updatePopups();
@@ -317,7 +442,6 @@
 
     function fitToSelectedCategory() {
       const selectedStores = selectedCategory === 'all' ? stores.features : stores.features.filter(store => store.properties.name.includes(selectedCategory));
-      console.log("filtered stores ", selectedStores, selectedStores.length)
       const bounds = new mapboxgl.LngLatBounds();
 
       selectedStores.forEach(store => bounds.extend(store.geometry.coordinates));
@@ -325,15 +449,50 @@
     }
 
     function updateSideView() {
-      const selectedStores = selectedCategory === 'all' ? stores.features : stores.features.filter(store => store.properties.name.includes(selectedCategory));
+      let selectedStores = selectedCategory === 'all' ? stores.features : stores.features.filter(store => store.properties.name.includes(selectedCategory));
+      console.log(selectedStores.length)
+
+
       document.querySelectorAll('.side-view div').forEach(div => {
         const category = div.id;
-        if (category === selectedCategory) {
-          if (selectedCategory != "all") div.innerHTML = `<strong>${category}<div class="close-button" onclick="selectCategory('all', 'override')">X</div></strong><br>${selectedStores.map(store => store.properties.name).join('<br>')}`;
+        if (category === selectedCategory && selectedCategory !== 'all') {
+          div.innerHTML = `
+        <div class="category-header" onclick="selectCategory('all', true)"><div class="selected-category-name" float: left">${category}</div><div class="close-button">X</div></div>
+        ${selectedStores.map(store => `<div class="sub-selection-field" id="${store.properties.name.replaceAll(" ", "_")}" onclick="storeClicked('${store.properties.name}')">${store.properties.name}</div>`).join('')}
+      `;
         } else {
-          div.innerHTML = category;
+          //find all stores in same category
+          div.innerHTML = `<div onclick="selectCategory('${category}')">${category}</div>`;
         }
       });
+    }
+
+    function storeClicked(storeName) {
+
+      //get all popups
+
+      //Filter all but where classlist.contains(store.properties.name)
+
+
+      Array.from(document.getElementsByClassName("custom-popup")).forEach(popup => {
+
+        console.log()
+
+        popup.style.display = "none"
+        if (popup.classList.contains(storeName.replaceAll(" ", "_"))) popup.style.display = "block"
+        // if(popup.classlist.includes('custom-popup')) console.log(popup.classList)
+
+      })
+
+      document.querySelectorAll('.side-view div div').forEach(el => el.classList.remove("selected"))
+      document.getElementById(storeName.replaceAll(" ", "_")).classList.add("selected")
+      const selectedStore = stores.features.find(store => store.properties.name === storeName);
+      if (selectedStore) {
+        const bounds = new mapboxgl.LngLatBounds();
+        bounds.extend(selectedStore.geometry.coordinates);
+        map.fitBounds(bounds, { padding: 20 });
+
+      }
     }
 
     function togglePopups() {
@@ -347,23 +506,27 @@
       }
 
       const zoomLevel = map.getZoom();
-      const highZoomThreshold = 6;
+      const highZoomThreshold = 10;
 
       hotspots.forEach(popup => {
-        popup.style.visibility = (zoomLevel < highZoomThreshold || !popup.classList.contains(selectedCategory)) ? 'hidden' : 'visible';
-        popup.style.width = (zoomLevel < highZoomThreshold || !popup.classList.contains(selectedCategory)) ? '0' : '';
-        popup.style.height = (zoomLevel < highZoomThreshold || !popup.classList.contains(selectedCategory)) ? '0' : '';
+        const isVisible = zoomLevel >= highZoomThreshold && popup.classList.contains(selectedCategory);
+        popup.style.visibility = isVisible ? 'visible' : 'hidden';
+        popup.style.width = isVisible ? '' : '0';
+        popup.style.height = isVisible ? '' : '0';
       });
+
       hotspotPointers.forEach(popup => {
-        popup.style.visibility = (zoomLevel < highZoomThreshold) ? 'hidden' : 'visible';
-        popup.style.width = (zoomLevel < highZoomThreshold) ? '0' : '';
-        popup.style.height = (zoomLevel < highZoomThreshold) ? '0' : '';
+        const isVisible = zoomLevel >= highZoomThreshold;
+        popup.style.visibility = isVisible ? 'visible' : 'hidden';
+        popup.style.width = isVisible ? '' : '0';
+        popup.style.height = isVisible ? '' : '0';
       });
     }
 
     map.on('zoom', togglePopups);
 
     togglePopups();
+
   </script>
 </body>
 

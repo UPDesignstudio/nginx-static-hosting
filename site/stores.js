@@ -3964,6 +3964,68 @@ let data = [
     "attribution": "© OpenStreetMap contributors",
     "attribution_license": "Open Database License",
     "attribution_url": "https://www.openstreetmap.org/copyright"
+  },
+
+  //manuell eingefügt: Carstens
+  {
+    "original_Standortbezeichnung": "SC SANITÄTSHAUS CARSTENS GMBH",
+    "original_Straße": "Florianstraße 18-20",
+    "original_PLZ": 70188,
+    "original_Ort": "Stuttgart",
+    "original_Bundesland/Kanton": "",
+    "original_Land": "Deutschland",
+    "original_Adresszusatz": "",
+    "lat": 48.784260,
+    "lon": 9.206440,
+    "formatted": "Florianstraße 18-20, 70188 Stuttgart, Deutschland",
+    "name": "",
+    "housenumber": 0,
+    "street": "Florianstraße",
+    "postcode": 70188,
+    "district": "",
+    "suburb": "",
+    "city": "",
+    "county": "",
+    "state": "",
+    "state_code": "",
+    "country": "",
+    "country_code": "",
+    "confidence": 1,
+    "confidence_city_level": 1,
+    "confidence_street_level": 1,
+    "attribution": "© OpenStreetMap contributors",
+    "attribution_license": "Open Database License",
+    "attribution_url": "https://www.openstreetmap.org/copyright"
+  },
+  {
+    "original_Standortbezeichnung": "SC Im Klinikum Esslingen",
+    "original_Straße": "Hirschlandstraße 97",
+    "original_PLZ": 73730,
+    "original_Ort": "Esslingen",
+    "original_Bundesland/Kanton": "",
+    "original_Land": "Deutschland",
+    "original_Adresszusatz": "",
+    "lat": 48.737140,
+    "lon": 9.327070,
+    "formatted": "Im Klinikum Esslingen, Hirschlandstraße 97, 73730 Esslingen, Deutschland",
+    "name": "",
+    "housenumber": 0,
+    "street": "Florianstraße",
+    "postcode": 73730,
+    "district": "",
+    "suburb": "",
+    "city": "",
+    "county": "",
+    "state": "",
+    "state_code": "",
+    "country": "",
+    "country_code": "",
+    "confidence": 1,
+    "confidence_city_level": 1,
+    "confidence_street_level": 1,
+    "attribution": "© OpenStreetMap contributors",
+    "attribution_license": "Open Database License",
+    "attribution_url": "https://www.openstreetmap.org/copyright"
   }
 ]
 
@@ -3971,14 +4033,7 @@ let data = [
 let auxStores = []
 
 data.forEach((store, index)=>{
-  // stores.push({
-  //     name: name,
-  //     coords: coords[index],
-  //     id: index,
-  //     excelLine: index + 2
-  // })
 
-  // console.log(typeof coords[index])
   auxStores.push({
       "type": "Feature",
       "properties": {
@@ -3992,3 +4047,22 @@ data.forEach((store, index)=>{
       }
   })
 })
+
+/*
+  [Montag 14:43] Keunecke, Stephanie (Extern)
+  Die Seitenliste bitte alphabetisch sortieren und ARS und MTS als 
+  Auswahlmöglichkeiten aufnehmen (bereits in Karte erhalten). 
+  Vielleicht auch ganz oben eine Art Home-Button oder einen zum Zurücksetzen der Ansicht.
+  
+  Im Anhang ein Screenshot, wie es auf meinem Smartphone aussieht. 
+  Ich habe keine Möglichkeit, die Liste einzuklappen bzw. die 
+  Karte in den Vordergrund zu holen. Da viele unserer Außendienstler
+   mit iPads arbeiten, sollten wir das Handling auf einem Touchdisplay berücksichtigen.
+  
+  Daher wären ein paar Navigationsbuttons nicht schlecht, wie Home/Übersicht, Liste einklappen usw.
+  Auch eine farbliche Abhebung wäre cool; die Standorte auf der Liste sind ja bereits farbig.
+  
+
+
+  CI Farben raussuchen
+*/
