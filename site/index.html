@@ -4,10 +4,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <title>Add a Geocoder</title>
+  <title>Auxilium Campus Map</title>
   <link href="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css" rel="stylesheet">
   <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js"></script>
-  <script src="aux-coordinates.js"></script>
+  <!-- <script src="aux-coordinates.js"></script> -->
   <style>
     :root {
       --color-primary: #131f75;
@@ -34,22 +34,75 @@
       --wby: #2bded7;
     }
 
-    .mapboxgl-popup.ARS::after    {background-color: var(--ars) !important;}
-    .mapboxgl-popup.AUX::after    {background-color: var(--aux) !important;}
-    .mapboxgl-popup.GEH::after    {background-color: var(--geh) !important;}
-    .mapboxgl-popup.LUT::after    {background-color: var(--lut) !important;}
-    .mapboxgl-popup.LUW::after    {background-color: var(--luw) !important;}
-    .mapboxgl-popup.MTS::after    {background-color: var(--mts) !important;}
-    .mapboxgl-popup.ORT::after    {background-color: var(--ort) !important;}
-    .mapboxgl-popup.RA::after     {background-color: var(--ra) !important;}
-    .mapboxgl-popup.SC::after     {background-color: var(--sc) !important;}
-    .mapboxgl-popup.SMINA::after  {background-color: var(--smina) !important;}
-    .mapboxgl-popup.SOC::after    {background-color: var(--soc) !important;}
-    .mapboxgl-popup.SUJ::after    {background-color: var(--suj) !important;}
-    .mapboxgl-popup.TMC::after    {background-color: var(--tmc) !important;}
-    .mapboxgl-popup.UPD::after    {background-color: var(--upd) !important;}
-    .mapboxgl-popup.WBW::after    {background-color: var(--wbw) !important;}
-    .mapboxgl-popup.WBY::after    {background-color: var(--wby) !important;}
+
+    .mapboxgl-popup::after {
+      z-index: -1;
+    }
+
+    .mapboxgl-popup.ARS::after {
+      background-color: var(--ars) !important;
+    }
+
+    .mapboxgl-popup.AUX::after {
+      background-color: var(--aux) !important;
+    }
+
+    .mapboxgl-popup.GEH::after {
+      background-color: var(--geh) !important;
+    }
+
+    .mapboxgl-popup.LUT::after {
+      background-color: var(--lut) !important;
+    }
+
+    .mapboxgl-popup.LUW::after {
+      background-color: var(--luw) !important;
+    }
+
+    .mapboxgl-popup.MTS::after {
+      background-color: var(--mts) !important;
+    }
+
+    .mapboxgl-popup.ORT::after {
+      background-color: var(--ort) !important;
+    }
+
+    .mapboxgl-popup.RA::after {
+      background-color: var(--ra) !important;
+    }
+
+    .mapboxgl-popup.SC::after {
+      background-color: var(--sc) !important;
+    }
+
+    .mapboxgl-popup.SMINA::after {
+      background-color: var(--smina) !important;
+    }
+
+    .mapboxgl-popup.SOC::after {
+      background-color: var(--soc) !important;
+    }
+
+    .mapboxgl-popup.SUJ::after {
+      background-color: var(--suj) !important;
+    }
+
+    .mapboxgl-popup.TMC::after {
+      background-color: var(--tmc) !important;
+    }
+
+    .mapboxgl-popup.UPD::after {
+      background-color: var(--upd) !important;
+    }
+
+    .mapboxgl-popup.WBW::after {
+      background-color: var(--wbw) !important;
+    }
+
+    .mapboxgl-popup.WBY::after {
+      background-color: var(--wby) !important;
+    }
+
     body {
       margin: 0;
       padding: 0;
@@ -94,15 +147,14 @@
     .mapboxgl-popup.all::after {
       box-shadow: 0 0 4px 1px #2bded7;
       content: "";
-      height: 10px;
-      width: 10px;
+      height: 15px;
+      width: 15px;
       background-color: rgb(69, 69, 255);
       position: absolute;
       left: 50%;
       bottom: 0;
       /* border-radius: 20px 20px 0 20px; */
       transform: translate(-50%, 50%) rotate(45deg);
-      z-index: -1;
       border: 1px solid white;
       visibility: visible;
       border-radius: 15px;
@@ -364,15 +416,49 @@
 
     map.on('load', function () {
       map.addSource('stores', { type: 'geojson', data: stores });
+
       map.addLayer({
         id: 'stores',
         type: 'circle',
         source: 'stores',
         paint: {
           'circle-radius': 20,
-          'circle-color': '#007cbf'
+          'circle-color': 'transparent'
         }
       });
+
+
+
+
+      map.on('click', 'stores', function (e) {
+        if (e.features.length > 0) {
+          var feature = e.features[0]; // Get the first feature from the clicked location
+          var coordinates = feature.geometry.coordinates.slice();
+          var properties = feature.properties;
+
+          // Extract specific properties from the feature
+          var id = properties.id; // Example property
+          var name = properties.name; // Example property
+          var description = properties.description; // Example property
+
+          // console.log('Feature ID:', id);
+          // console.log('Feature Name:', name);
+          // console.log('Feature Description:', description);
+          // console.log('Clicked Coordinates:', coordinates);
+
+          console.log(stores.features.find(el => el.properties.name == name))
+
+          selectIndividualStore(name)
+          // Optionally, show details in a popup
+          // new mapboxgl.Popup()
+          //   .setLngLat(coordinates)
+          //   .setHTML('<h3>' + description + '</h3>')
+          //   .addTo(map);
+        } else {
+          console.log('No features found at the clicked location');
+        }
+      });
+
       stores.features.forEach(store => {
         const popup = new mapboxgl.Popup({
           closeButton: false,
@@ -381,7 +467,8 @@
         })
           .setLngLat(store.geometry.coordinates)
           .setHTML(`
-                    <div class="custom-popup ${store.properties.name}  ${store.properties.name.replaceAll(" ", "_")}">
+                    <div class="custom-popup ${store.properties.name}  ${store.properties.name.replaceAll(" ", "_")}""
+                      onclick="storeClicked('${store.properties.name}')">
                         <div class="no-padding">${store.properties.name}</div>
                         <div class="no-padding">${store.properties.address}</div>
                     </div>
@@ -389,7 +476,8 @@
           .addTo(map);
         store.properties.popup = popup;
       });
-      map.setLayoutProperty(map.getStyle().layers[78].id, 'visibility', 'none');
+      // map.setLayoutProperty(map.getStyle().layers[78].id, 'visibility', 'none');
+
     });
 
     const geocoder = new MapboxGeocoder({
@@ -419,7 +507,7 @@
     });
 
     function selectCategory(category, override) {
-
+      subSelectedStores = []
       if (category == "all") document.getElementsByClassName("back-button")[0].style.display = "none"
       else document.getElementsByClassName("back-button")[0].style.display = "block"
 
@@ -437,6 +525,14 @@
     function updatePopups() {
       document.querySelectorAll('.mapboxgl-popup').forEach(popup => {
         popup.style.display = popup.classList.contains(selectedCategory) ? 'block' : 'none';
+
+
+        if (!popup.getElementsByClassName("point")) {
+          let point = document.createElement("div")
+          point.classList.add("point")
+          popup.appendChild(point)
+        }
+
       });
       togglePopups();
     }
@@ -450,7 +546,7 @@
     }
 
     function updateSideView() {
-      let selectedStores = selectedCategory === 'all' ? stores.features : stores.features.filter(store => store.properties.name.includes(selectedCategory));
+      let selectedStores = selectedCategory === 'all' ? stores.features : stores.features.filter(store => store.properties.name.includes(selectedCategory + " "));
       console.log(selectedStores.length)
 
 
@@ -468,32 +564,88 @@
       });
     }
 
+    let subSelectedStores = []
+
+
+    function getID(name) {
+      return name.replaceAll(" ", "_")
+    }
+
     function storeClicked(storeName) {
+      // Get the store ID and feature based on the storeName
+      let storeID = getID(storeName);
+      let storePushed = stores.features.find(store => store.properties.name === storeName);
 
-      //get all popups
+      // Check if the store is already in the selected array
+      let isStoreSelected = subSelectedStores.some(store => store.properties.name === storeName);
 
-      //Filter all but where classlist.contains(store.properties.name)
+      if (isStoreSelected) {
+        // If already selected, remove it from the selected stores array
+        console.log("store already clicked, hiding...");
+        subSelectedStores = subSelectedStores.filter(store => store.properties.name !== storeName);
+        // Remove 'selected' class from the element
+        if (document.getElementById(storeID)) {
+          document.getElementById(storeID).classList.remove("selected");
+          console.log("removed selected class");
+        }
+      } else {
+        // If not selected, add it to the selected stores array
+        subSelectedStores.push(storePushed);
+        // Add 'selected' class to the element
+        if (document.getElementById(storeID)) {
+          document.getElementById(storeID).classList.add("selected");
+        }
+      }
 
+      console.log(subSelectedStores);
 
+      // Update popups visibility
       Array.from(document.getElementsByClassName("custom-popup")).forEach(popup => {
+        // const popupStoreName = popup.getAttribute('data-store-name'); // Assuming popups have a 'data-store-name' attribute
+        // const storeNameClass = storeName.replaceAll(" ", "_");
 
-        console.log()
+        // // Check if the current popup should be visible
+        // if (subSelectedStores.some(store => store.properties.name.replaceAll(" ", "_") === storeNameClass)) {
+        //   popup.style.display = "block";
+        //   popup.parentElement.parentElement.style.zIndex = 10000;
+        // } else {
+        //   popup.style.display = "none";
+        //   popup.parentElement.parentElement.style.zIndex = 1;
+        // }
+
 
         popup.style.display = "none"
-        if (popup.classList.contains(storeName.replaceAll(" ", "_"))) popup.style.display = "block"
-        // if(popup.classlist.includes('custom-popup')) console.log(popup.classList)
 
-      })
+        subSelectedStores.forEach(el => {
+          console.log(el)
+          if (popup.classList.contains(el.properties.name.replaceAll(" ", "_"))) {
+            popup.style.display = "block"
+            popup.parentElement.parentElement.style.zIndex = 10000
+          }
+          else {
+            popup.parentElement.parentElement.style.zIndex = 1
+          }
+        })
 
-      document.querySelectorAll('.side-view div div').forEach(el => el.classList.remove("selected"))
-      document.getElementById(storeName.replaceAll(" ", "_")).classList.add("selected")
-      const selectedStore = stores.features.find(store => store.properties.name === storeName);
-      if (selectedStore) {
+
+
+
+      });
+
+      // Fit map bounds if any stores are selected
+      if (subSelectedStores.length > 0) {
         const bounds = new mapboxgl.LngLatBounds();
-        bounds.extend(selectedStore.geometry.coordinates);
+        subSelectedStores.forEach(store => bounds.extend(store.geometry.coordinates));
         map.fitBounds(bounds, { padding: 20 });
-
+      } else {
+        // If no stores are selected, select 'all' categories or handle accordingly
+        selectCategory("all");
       }
+    }
+
+    function selectIndividualStore(name) {
+      selectCategory('all')
+      storeClicked(name)
     }
 
     function togglePopups() {
@@ -506,18 +658,42 @@
         }
       }
 
+
+
       const zoomLevel = map.getZoom();
       const highZoomThreshold = 10;
 
       hotspots.forEach(popup => {
-        const isVisible = zoomLevel >= highZoomThreshold && popup.classList.contains(selectedCategory);
+        let isVisible = zoomLevel >= highZoomThreshold && popup.classList.contains(selectedCategory);
+        //if in sub selected, make visible
+        subSelectedStores.forEach(el => {
+          // console.log(el.properties.name.replaceAll(" ", "_"))
+          if (popup.getElementsByClassName(el.properties.name.replaceAll(" ", "_"))) {
+            isVisible = true
+          }
+          // console.log(isVisible)
+        })
+
+        // isVisible = true
         popup.style.visibility = isVisible ? 'visible' : 'hidden';
         popup.style.width = isVisible ? '' : '0';
         popup.style.height = isVisible ? '' : '0';
+        // return
+        // popup.style.visibility = isVisible ? 'visible' : 'hidden';
+        // popup.style.width = isVisible ? '' : '0px';
+        // popup.querySelectorAll(".no-padding")[0].style.visibility = isVisible ? 'visible' : 'hidden';
+        // popup.querySelectorAll(".no-padding")[1].style.visibility = isVisible ? 'visible' : 'hidden';
+
       });
 
       hotspotPointers.forEach(popup => {
-        const isVisible = zoomLevel >= highZoomThreshold;
+
+        let isVisible = zoomLevel >= highZoomThreshold;
+
+        subSelectedStores.forEach(el => {
+          if (popup.classList.contains(el.properties.name.replaceAll(" ", "_"))) isVisible = true
+        })
+
         popup.style.visibility = isVisible ? 'visible' : 'hidden';
         popup.style.width = isVisible ? '' : '0';
         popup.style.height = isVisible ? '' : '0';

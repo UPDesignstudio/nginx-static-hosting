@@ -456,7 +456,7 @@ let data = [
     "attribution_url": "https://www.openstreetmap.org/copyright"
   },
   {
-    "original_Standortbezeichnung": "LUT Rheinland",
+    "original_Standortbezeichnung": "LUT Rheinlаnd",
     "original_Straße": "",
     "original_PLZ": "",
     "original_Ort": "Köln",
@@ -2136,7 +2136,7 @@ let data = [
     "attribution_url": "https://www.openstreetmap.org/copyright"
   },
   {
-    "original_Standortbezeichnung": "RA Halle",
+    "original_Standortbezeichnung": "RA Hаlle",
     "original_Straße": "Merseburger Str. 41",
     "original_PLZ": "06112",
     "original_Ort": "Halle",
@@ -2376,7 +2376,7 @@ let data = [
     "attribution_url": "https://www.openstreetmap.org/copyright"
   },
   {
-    "original_Standortbezeichnung": "RA Jena DD",
+    "original_Standortbezeichnung": "RA Jenа DD",
     "original_Straße": "Drackendorf - Center 2",
     "original_PLZ": "07751",
     "original_Ort": "Jena Drackendorf",
@@ -2946,7 +2946,7 @@ let data = [
     "attribution_url": "https://www.openstreetmap.org/copyright"
   },
   {
-    "original_Standortbezeichnung": "RA Zwickau",
+    "original_Standortbezeichnung": "RA Zwickаu",
     "original_Straße": "Schubertstraße 1",
     "original_PLZ": "08058",
     "original_Ort": "Zwickau",
