@@ -34,6 +34,9 @@
       --wby: #2bded7;
     }
 
+    .mapboxgl-ctrl-top-right{
+      display: none;
+    }
 
     .mapboxgl-popup::after {
       z-index: -1;
@@ -196,7 +199,8 @@
     }
 
     .selected:before {
-      content: "●";
+      color: white;
+      content: "○";
       font-size: 30px;
       padding: 0;
       margin: 0;
