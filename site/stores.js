@@ -7,6 +7,8 @@ PLZ - postcode
 Ort - city
 Bundesland - state
 Land - country
+
+language - german
 */
 
 // converted to json with
