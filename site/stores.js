@@ -14,6 +14,12 @@ language - german
 // converted to json with
 // https://csvjson.com/csv2json
 
+//zu beacheten:
+/*
+- "original_Standortbezeichnung" wird verwendet als name
+- "original_Standortbezeichnung" wird verwendet um mit dem ersten wort in kategorien zu gruppieren -> benötigt ein leerzeichen
+ */
+
 let data = [
   {
     "original_Firma": "ARS",
@@ -149,7 +155,7 @@ let data = [
   },
   {
     "original_Firma": "Auxilium GmbH",
-    "original_Standortbezeichnung": "AUX- Stuttgart",
+    "original_Standortbezeichnung": "AUX - Stuttgart",
     "original_Straße": "Löffelstraße 40",
     "original_PLZ": 70597,
     "original_Ort": "Stuttgart",
@@ -4241,7 +4247,7 @@ let data = [
   },
   {
     "original_Firma": "STEINKE Orthopädie-Center GmbH",
-    "original_Standortbezeichnung": "SOC-HBS-Bahndamm",
+    "original_Standortbezeichnung": "SOC - HBS-Bahndamm",
     "original_Straße": "Bahndamm 7",
     "original_PLZ": 38820,
     "original_Ort": "Halberstadt",
@@ -4274,7 +4280,7 @@ let data = [
   },
   {
     "original_Firma": "STEINKE Orthopädie-Center GmbH",
-    "original_Standortbezeichnung": "SOC-HBS-Klinikshop",
+    "original_Standortbezeichnung": "SOC - HBS-Klinikshop",
     "original_Straße": "Gleimstr. 5",
     "original_PLZ": 38820,
     "original_Ort": "Halberstadt",
@@ -4307,7 +4313,7 @@ let data = [
   },
   {
     "original_Firma": "STEINKE Orthopädie-Center GmbH",
-    "original_Standortbezeichnung": "SOC-HBS-Schlagmühle",
+    "original_Standortbezeichnung": "SOC - HBS-Schlagmühle",
     "original_Straße": "Über der Schlagmühle 46",
     "original_PLZ": 38820,
     "original_Ort": "Halberstadt",
@@ -4340,7 +4346,7 @@ let data = [
   },
   {
     "original_Firma": "STEINKE Orthopädie-Center GmbH",
-    "original_Standortbezeichnung": "SOC-HBS-Voigtei",
+    "original_Standortbezeichnung": "SOC - HBS-Voigtei",
     "original_Straße": "Voigtei 34 - 35",
     "original_PLZ": 38820,
     "original_Ort": "Halberstadt",
@@ -4373,7 +4379,7 @@ let data = [
   },
   {
     "original_Firma": "STEINKE Orthopädie-Center GmbH",
-    "original_Standortbezeichnung": "SOC-QLB-Klinikshop",
+    "original_Standortbezeichnung": "SOC - QLB-Klinikshop",
     "original_Straße": "Ditfurter Weg 24",
     "original_PLZ": "06484",
     "original_Ort": "Quedlinburg",
@@ -4406,7 +4412,7 @@ let data = [
   },
   {
     "original_Firma": "STEINKE Orthopädie-Center GmbH",
-    "original_Standortbezeichnung": "SOC-SZ",
+    "original_Standortbezeichnung": "SOC - SZ",
     "original_Straße": "Kattowitzer Str. 191",
     "original_PLZ": 38226,
     "original_Ort": "Salzgitter-Lebenstedt",
@@ -4439,7 +4445,7 @@ let data = [
   },
   {
     "original_Firma": "STEINKE Orthopädie-Center GmbH",
-    "original_Standortbezeichnung": "SOC-SZ-Klinikshop",
+    "original_Standortbezeichnung": "SOC - SZ-Klinikshop",
     "original_Straße": "Kattowitzer Str. 191",
     "original_PLZ": 38226,
     "original_Ort": "Salzgitter-Lebenstedt",
@@ -4472,7 +4478,7 @@ let data = [
   },
   {
     "original_Firma": "STEINKE Orthopädie-Center GmbH",
-    "original_Standortbezeichnung": "SOC-WR",
+    "original_Standortbezeichnung": "SOC - WR",
     "original_Straße": "Schmatzfelder Str. 2",
     "original_PLZ": 38855,
     "original_Ort": "Wernigerode",
@@ -4505,7 +4511,7 @@ let data = [
   },
   {
     "original_Firma": "STEINKE Orthopädie-Center GmbH",
-    "original_Standortbezeichnung": "SOC-WR-Klinikshop",
+    "original_Standortbezeichnung": "SOC - WR-Klinikshop",
     "original_Straße": "Ilsenburgerstr. 14",
     "original_PLZ": 38855,
     "original_Ort": "Wernigerode",
@@ -5297,7 +5303,7 @@ let data = [
   },
   {
     "original_Firma": "rahm GmbH",
-    "original_Standortbezeichnung": "Zentrale",
+    "original_Standortbezeichnung": "Zentrale rahm GmbH",
     "original_Straße": "Iltisweg 1-3",
     "original_PLZ": 53842,
     "original_Ort": "Troisdorf-Spich",
@@ -5330,7 +5336,7 @@ let data = [
   },
   {
     "original_Firma": "Friedrich Georg Streifeneder KG",
-    "original_Standortbezeichnung": "Zentrale",
+    "original_Standortbezeichnung": "Zentrale Friedrich Georg Streifeneder KG",
     "original_Straße": "Moosfeldstraße 1",
     "original_PLZ": 82275,
     "original_Ort": "Emmering",
@@ -5363,11 +5369,9 @@ let data = [
   }
 ]
 
-
+//rearrange data to fit geojson format
 let auxStores = []
-
 data.forEach((store, index)=>{
-
   auxStores.push({
       "type": "Feature",
       "properties": {
