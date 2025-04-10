@@ -364,9 +364,7 @@
     Zurück
   </div>
   <script>
-
-
-
+    // Initialize the map
     mapboxgl.accessToken = 'pk.eyJ1IjoiZmFiaWFuZmFiaWFuIiwiYSI6ImNscHZhYm9wcTAzbWkybXBmZ3NoYzVkajcifQ.wVZsBT_ne-Kim0JmryvbOA';
     const map = new mapboxgl.Map({
       container: 'map',
@@ -385,13 +383,23 @@
       features: auxStores
     };
 
+
+    //make a category list from the stores, using the first word in each store name, sorted alphabetically
     let uniqueCategories = []
-
+    console.log("auxStores", auxStores);
     auxStores.forEach(store => {
-      console.log(store)
-      if (!uniqueCategories.includes(store.properties.name.split(" ")[0])) uniqueCategories.push(store.properties.name.split(" ")[0])
+      let categoryname = store.properties.name.split(" ")[0];
+      // console.log(categoryname)
+      if (!uniqueCategories.includes(categoryname)) uniqueCategories.push(categoryname)
     })
+    function sortStringsAlphabetically(strings) {
+      return strings.sort((a, b) => a.localeCompare(b));
+    }
+    uniqueCategories = sortStringsAlphabetically(uniqueCategories)
+    console.log("uniqueCategories", uniqueCategories)
 
+
+    //create category divs in html
     function createDivsFromStrings(strings) {
       const container = document.createDocumentFragment();
 
@@ -410,16 +418,9 @@
 
       return container;
     }
-
-    function sortStringsAlphabetically(strings) {
-      return strings.sort((a, b) => a.localeCompare(b));
-    }
-
-    uniqueCategories = sortStringsAlphabetically(uniqueCategories)
-
     document.getElementById("sideView").appendChild(createDivsFromStrings(uniqueCategories))
-    // console.log(uniqueCategories)
 
+    //map has been loaded, add stores and onclick binding
     map.on('load', function () {
       map.addSource('stores', { type: 'geojson', data: stores });
 
@@ -432,9 +433,6 @@
           'circle-color': 'transparent'
         }
       });
-
-
-
 
       map.on('click', 'stores', function (e) {
         if (e.features.length > 0) {
@@ -518,7 +516,7 @@
       else document.getElementsByClassName("back-button")[0].style.display = "block"
 
       if (override) {
-        setTimeout(() => selectCategory('all'), 1);
+        setTimeout(() => selectCategory('all'), 1); //oh no. why??
         return;
       }
 
@@ -552,7 +550,7 @@
     }
 
     function updateSideView() {
-      let selectedStores = selectedCategory === 'all' ? stores.features : stores.features.filter(store => store.properties.name.includes(selectedCategory + " "));
+      let selectedStores = selectedCategory === 'all' ? stores.features : stores.features.filter(store => store.properties.name.startsWith(selectedCategory + " "));
       console.log(selectedStores.length)
 
 
